@@ -9,13 +9,13 @@ Mat image;
 float scale = 2;
 
 int * resizePixels(int temp[], int pixels[], int w1, int h1, int w2, int h2) {
-    int x_scaleFactor = (int)((w1<<16)/w2) +1;
-    int y_scaleFactor = (int)((h1<<16)/h2) +1;
+    int x_scaleFactor = ((w1<<16)/w2) +1;
+    int y_scaleFactor = ((h1<<16)/h2) +1;
     int sX, sY ;
     for (int i = 0; i < h2; i++) {
         for (int j = 0; j < w2; j++) {
-            sX = ((j*x_scaleFactor)>>16) ;
-            sY = ((i*y_scaleFactor)>>16) ;
+            sX = j * x_scaleFactor >> 16;
+            sY = i * y_scaleFactor >> 16;
             temp[(i*w2)+j] = pixels[(sY*w1)+sX] ;
         }
     }
@@ -56,7 +56,7 @@ int * resizeImage(int temp[], int pixels[], int w, int h, int w2, int h2) {
                     D*(delta_R*delta_C)
             ) ;
 
-            temp[i*w2+j] = gray ;
+            temp[(i*w2)+j] = gray ;
 
         }
 
