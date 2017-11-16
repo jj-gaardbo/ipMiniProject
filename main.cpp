@@ -8,8 +8,21 @@ using namespace cv;
 Mat image;
 int scale = 2;
 
+int * resizePixels(int temp[], const int pixels[],int w1,int h1,int w2,int h2) {
+    int x_ratio = (int)((w1<<16)/w2) +1;
+    int y_ratio = (int)((h1<<16)/h2) +1;
+    int sX, sY ;
+    for (int i = 0; i < h2; i++) {
+        for (int j = 0; j < w2; j++) {
+            sX = ((j*x_ratio)>>16) ;
+            sY = ((i*y_ratio)>>16) ;
+            temp[(i*w2)+j] = pixels[(sY*w1)+sX] ;
+        }
+    }
+    return temp ;
+}
 
-int * resizeImage(int temp[], int pixels[] , int w, int h, int w2, int h2) {
+int * resizeImage(int temp[], const int pixels[] , int w, int h, int w2, int h2) {
     int A, B, C, D, x, y, index, gray ;
     float x_ratio = ((float)(w-1))/w2 ;
     float y_ratio = ((float)(h-1))/h2 ;
@@ -17,10 +30,10 @@ int * resizeImage(int temp[], int pixels[] , int w, int h, int w2, int h2) {
     int offset = 0 ;
     for (int i=0;i<h2;i++) {
         for (int j=0;j<w2;j++) {
-            x = (int)(x_ratio * j) ;
-            y = (int)(y_ratio * i) ;
-            x_diff = (x_ratio * j) - x ;
-            y_diff = (y_ratio * i) - y ;
+            x = (int) floor(x_ratio * j) ;
+            y = (int) floor(y_ratio * i) ;
+            x_diff = (x_ratio * j) - x;
+            y_diff = (y_ratio * i) - y;
             index = y*w+x ;
 
             // range is 0 to 255 thus bitwise AND with 0xff
@@ -28,6 +41,8 @@ int * resizeImage(int temp[], int pixels[] , int w, int h, int w2, int h2) {
             B = pixels[index+1] & 0xff;
             C = pixels[index+w] & 0xff;
             D = pixels[index+w+1] & 0xff;
+
+            cout << "ABCD: " << A << " " << B << " " << C << " " << D << endl;
 
             // Y = A(1-w)(1-h) + B(w)(1-h) + C(h)(1-w) + Dwh
             gray = (int)(
@@ -58,10 +73,16 @@ int main() {
 
     int data[w2*h2];
     unsigned char* dataMat = image.data;
-    resizeImage(data, reinterpret_cast<int *>(dataMat), w, h, w2, h2);
+    resizePixels(data, reinterpret_cast<int *>(dataMat), w, h, w2, h2);
 
     Mat newImage = Mat(h2, w2, CV_8UC1, data);
     imshow("Resized", newImage);
+
+    Size size(w2, h2);
+    Mat openCVScale;
+    resize(image, openCVScale, size);
+    imshow("OpenCVScale", openCVScale);
+
     waitKey(0);
     return 0;
 }
