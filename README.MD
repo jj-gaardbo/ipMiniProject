@@ -9,4 +9,10 @@ Output:​ Visualization of the scaled image
 
 Discussion: Compare the results of forward and backward mapping.
 
-Based on: http://tech-algorithm.com/articles/bilinear-image-scaling/
+Sources: 
+
+- http://tech-algorithm.com/articles/bilinear-image-scaling/
+
+- https://ia902707.us.archive.org/23/items/Lectures_on_Image_Processing/EECE_4353_15_Resampling.pdf
+
+- https://www.codementor.io/tips/7814203938/resize-an-image-with-bilinear-interpolation-without-imresize
