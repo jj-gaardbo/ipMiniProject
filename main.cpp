@@ -9,13 +9,13 @@ Mat image;
 float scale = 2;
 
 int * resizePixels(int temp[], int pixels[], int w1, int h1, int w2, int h2) {
-    int x_ratio = (int)((w1<<16)/w2) +1;
-    int y_ratio = (int)((h1<<16)/h2) +1;
+    int x_scaleFactor = (int)((w1<<16)/w2) +1;
+    int y_scaleFactor = (int)((h1<<16)/h2) +1;
     int sX, sY ;
     for (int i = 0; i < h2; i++) {
         for (int j = 0; j < w2; j++) {
-            sX = ((j*x_ratio)>>16) ;
-            sY = ((i*y_ratio)>>16) ;
+            sX = ((j*x_scaleFactor)>>16) ;
+            sY = ((i*y_scaleFactor)>>16) ;
             temp[(i*w2)+j] = pixels[(sY*w1)+sX] ;
         }
     }
@@ -26,10 +26,10 @@ int * resizeImage(int temp[], int pixels[], int w, int h, int w2, int h2) {
     int A, B, C, D, sX, sY, index, gray ;
 
     //If we are scaling up. Than the scaling factor is smaller than 1.
-    float x_scaleFactor = scale > 1 ? ((float)(w-1))/w2 : (float)w/w2;
-    float y_scaleFactor = scale > 1 ? ((float)(h-1))/h2 : (float)h/h2;
+    double x_scaleFactor = scale > 1 ? ((double)(w-1))/w2 : (double)w/w2;
+    double y_scaleFactor = scale > 1 ? ((double)(h-1))/h2 : (double)h/h2;
 
-    float delta_R, delta_C;
+    double delta_R, delta_C;
 
     for (int i = 0; i < h2; i++) {
 
@@ -41,7 +41,7 @@ int * resizeImage(int temp[], int pixels[], int w, int h, int w2, int h2) {
             delta_R = (x_scaleFactor * j) - sX;
             delta_C = (y_scaleFactor * i) - sY;
 
-            index = sY * w + sX ;
+            index = (sY * w) + sX ;
 
             // range is 0 to 255 thus bitwise AND with 0xff
             A = pixels[index] & 0xff;
